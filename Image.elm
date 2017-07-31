@@ -2,10 +2,18 @@ module Image exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (..)
 import Imgur
+import Style exposing ((=>), image)
 
 
-view : Imgur.Image -> msg -> Html msg
-view model showNext =
-    img [ src model.link, alt model.title, onClick showNext ] []
+view : Imgur.Image -> Html msg
+view model =
+    case model.link of
+        Just link ->
+            div
+                [ style <| ("background-image" => ("url(" ++ link ++ ")")) :: image
+                ]
+                []
+
+        Nothing ->
+            div [] [ text "Image link not found :(" ]
