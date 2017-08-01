@@ -9,6 +9,7 @@ import Html.Attributes exposing (style)
 import Html.Events exposing (..)
 import String
 import Image
+import Video
 import Imgur
 import Array
 import Style
@@ -26,12 +27,14 @@ type alias Model =
     , tick : Int
     , slideshowInterval : Int
     , isPlaying : Bool
+    , isLoading : Bool
     }
 
 
 type Msg
     = SetImages (Result Http.Error Imgur.Model)
     | ShowNext
+    | PrepareNext
     | Tick Time.Time
     | InputMsg Input.Msg
     | CountdownMsg Countdown.Msg
@@ -50,8 +53,9 @@ initialModel =
     , error = ""
     , inputModel = Input.Model "funny"
     , tick = 0
-    , slideshowInterval = 50
+    , slideshowInterval = 30
     , isPlaying = True
+    , isLoading = True
     }
 
 
@@ -83,9 +87,6 @@ filterImages images =
         filter : Imgur.Image -> Bool
         filter image =
             List.all (\r -> r image) rules
-
-        _ =
-            Debug.log "images" <| List.filter filter images
     in
         List.filter filter images
 
@@ -118,14 +119,14 @@ update msg model =
                         model
             in
                 if tick == 0 && model.isPlaying then
-                    update ShowNext model_
+                    update PrepareNext model_
                 else
                     model_ ! []
 
         InputMsg msg ->
             case msg of
                 Input.Submit ->
-                    model ! [ getImages (Imgur.request <| Imgur.api model.inputModel.value "0") ]
+                    { model | isLoading = True } ! [ getImages (Imgur.request <| Imgur.api model.inputModel.value "0") ]
 
                 _ ->
                     let
@@ -135,16 +136,17 @@ update msg model =
                         { model | inputModel = inputModel } ! [ Cmd.map InputMsg inputMsg ]
 
         SetImages (Ok images) ->
-            (if List.length images /= 0 then
-                { model
-                    | images = filterImages images
-                    , visibleId = 0
-                    , visibleImage = pickImage 0 <| filterImages images
-                }
-             else
-                model
-            )
-                ! []
+            let
+                model_ =
+                    if List.length images /= 0 then
+                        { model
+                            | images = filterImages images
+                            , visibleId = 0
+                        }
+                    else
+                        model
+            in
+                update ShowNext model_
 
         SetImages (Err error) ->
             { model | error = toString error } ! []
@@ -163,10 +165,18 @@ update msg model =
                           )
             in
                 { model
-                    | visibleId = newId
+                    | isLoading = False
+                    , visibleId = newId
                     , visibleImage = pickImage newId model.images
                 }
                     ! []
+
+        PrepareNext ->
+            { model
+                | isLoading = True
+            }
+                ! [ Task.perform (\_ -> ShowNext) <| Process.sleep (Time.millisecond * 200)
+                  ]
 
 
 getImages : Http.Request Imgur.Model -> Cmd Msg
@@ -176,12 +186,25 @@ getImages request =
 
 view : Model -> Html Msg
 view model =
-    div
-        [ style Style.root ]
-        [ Html.map InputMsg (Input.view model.inputModel)
-        , Image.view model.visibleImage
-        , Html.map CountdownMsg <|
-            Countdown.view <|
-                Countdown.Model (model.slideshowInterval - model.tick)
-                    model.isPlaying
-        ]
+    let
+        player =
+            if Maybe.withDefault False model.visibleImage.animated then
+                Video.view model.visibleImage
+            else
+                Image.view model.visibleImage
+
+        loader =
+            div [ style Style.loader ] [ text "..." ]
+    in
+        div
+            [ style Style.root ]
+            [ if model.isLoading then
+                loader
+              else
+                player
+            , Html.map CountdownMsg <|
+                Countdown.view <|
+                    Countdown.Model (model.slideshowInterval - model.tick)
+                        model.isPlaying
+            , Html.map InputMsg (Input.view model.inputModel)
+            ]

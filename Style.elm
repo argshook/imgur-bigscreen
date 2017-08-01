@@ -13,14 +13,27 @@ type alias CSSRule =
 root : List CSSRule
 root =
     [ "position" => "relative"
-    , "background" => "radial-gradient(#2b2b2b 40%, black)"
+    , "width" => "100%"
+    , "height" => "100%"
+    , "background" => "radial-gradient(rgb(43, 43, 43) 40%, black)"
+    , "overflow" => "hidden"
     ]
 
 
 image : List CSSRule
 image =
-    [ "width" => "100vw"
-    , "height" => "100vh"
+    [ "width" => "100%"
+    , "height" => "100%"
+    , "background-size" => "contain"
+    , "background-position" => "50% 50%"
+    , "background-repeat" => "no-repeat"
+    ]
+
+
+video : List CSSRule
+video =
+    [ "width" => "100%"
+    , "height" => "100%"
     , "background-size" => "contain"
     , "background-position" => "50% 50%"
     , "background-repeat" => "no-repeat"
@@ -63,4 +76,18 @@ countdownButton =
     , "justify-content" => "center"
     , "align-items" => "center"
     , "border-radius" => "50%"
+    ]
+
+
+loader : List CSSRule
+loader =
+    [ "position" => "absolute"
+    , "display" => "flex"
+    , "top" => "0"
+    , "right" => "0"
+    , "bottom" => "0"
+    , "left" => "0"
+    , "justify-content" => "center"
+    , "align-items" => "center"
+    , "color" => "#656565"
     ]

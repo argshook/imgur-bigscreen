@@ -13,6 +13,8 @@ type alias Image =
     , link : Maybe String
     , nsfw : Maybe Bool
     , isAlbum : Maybe Bool
+    , animated : Maybe Bool
+    , mp4 : Maybe String
     }
 
 
@@ -22,6 +24,8 @@ defaultImage =
     , link = Just ""
     , nsfw = Just False
     , isAlbum = Just False
+    , animated = Just False
+    , mp4 = Nothing
     }
 
 
@@ -31,18 +35,20 @@ defaultImage =
 
 api : String -> String -> String
 api subreddit page =
-    "https://api.imgur.com/3/gallery/r/" ++ subreddit ++ "/top/month/" ++ page
+    "https://api.imgur.com/3/gallery/r/" ++ subreddit ++ "/time/today/" ++ page
 
 
 responseDecoder : Decode.Decoder Model
 responseDecoder =
     let
         imageDecoder =
-            Decode.map4 Image
+            Decode.map6 Image
                 (Decode.maybe (Decode.field "title" Decode.string))
                 (Decode.maybe (Decode.field "link" Decode.string))
                 (Decode.maybe (Decode.field "nsfw" Decode.bool))
                 (Decode.maybe (Decode.field "is_album" Decode.bool))
+                (Decode.maybe (Decode.field "animated" Decode.bool))
+                (Decode.maybe (Decode.field "mp4" Decode.string))
     in
         Decode.field "data" (Decode.list imageDecoder)
 

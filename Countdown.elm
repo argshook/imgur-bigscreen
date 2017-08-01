@@ -24,8 +24,8 @@ view model =
         [ input
             [ style Style.countdownRange
             , type_ "range"
-            , Html.Attributes.min "5"
-            , Html.Attributes.max "50"
+            , Html.Attributes.min "3"
+            , Html.Attributes.max "60"
             , onInput Change
             ]
             []
