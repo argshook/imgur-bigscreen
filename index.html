@@ -9009,21 +9009,23 @@ var _user$project$Imgur$api = F2(
 			A2(
 				_elm_lang$core$Basics_ops['++'],
 				subreddit,
-				A2(_elm_lang$core$Basics_ops['++'], '/top/month/', page)));
+				A2(_elm_lang$core$Basics_ops['++'], '/time/today/', page)));
 	});
 var _user$project$Imgur$defaultImage = {
 	title: _elm_lang$core$Maybe$Just(''),
 	link: _elm_lang$core$Maybe$Just(''),
 	nsfw: _elm_lang$core$Maybe$Just(false),
-	isAlbum: _elm_lang$core$Maybe$Just(false)
+	isAlbum: _elm_lang$core$Maybe$Just(false),
+	animated: _elm_lang$core$Maybe$Just(false),
+	mp4: _elm_lang$core$Maybe$Nothing
 };
-var _user$project$Imgur$Image = F4(
-	function (a, b, c, d) {
-		return {title: a, link: b, nsfw: c, isAlbum: d};
+var _user$project$Imgur$Image = F6(
+	function (a, b, c, d, e, f) {
+		return {title: a, link: b, nsfw: c, isAlbum: d, animated: e, mp4: f};
 	});
 var _user$project$Imgur$responseDecoder = function () {
-	var imageDecoder = A5(
-		_elm_lang$core$Json_Decode$map4,
+	var imageDecoder = A7(
+		_elm_lang$core$Json_Decode$map6,
 		_user$project$Imgur$Image,
 		_elm_lang$core$Json_Decode$maybe(
 			A2(_elm_lang$core$Json_Decode$field, 'title', _elm_lang$core$Json_Decode$string)),
@@ -9032,7 +9034,11 @@ var _user$project$Imgur$responseDecoder = function () {
 		_elm_lang$core$Json_Decode$maybe(
 			A2(_elm_lang$core$Json_Decode$field, 'nsfw', _elm_lang$core$Json_Decode$bool)),
 		_elm_lang$core$Json_Decode$maybe(
-			A2(_elm_lang$core$Json_Decode$field, 'is_album', _elm_lang$core$Json_Decode$bool)));
+			A2(_elm_lang$core$Json_Decode$field, 'is_album', _elm_lang$core$Json_Decode$bool)),
+		_elm_lang$core$Json_Decode$maybe(
+			A2(_elm_lang$core$Json_Decode$field, 'animated', _elm_lang$core$Json_Decode$bool)),
+		_elm_lang$core$Json_Decode$maybe(
+			A2(_elm_lang$core$Json_Decode$field, 'mp4', _elm_lang$core$Json_Decode$string)));
 	return A2(
 		_elm_lang$core$Json_Decode$field,
 		'data',
@@ -9064,16 +9070,49 @@ var _user$project$Style$root = {
 	_0: A2(_user$project$Style_ops['=>'], 'position', 'relative'),
 	_1: {
 		ctor: '::',
-		_0: A2(_user$project$Style_ops['=>'], 'background', 'radial-gradient(#2b2b2b 40%, black)'),
-		_1: {ctor: '[]'}
+		_0: A2(_user$project$Style_ops['=>'], 'width', '100%'),
+		_1: {
+			ctor: '::',
+			_0: A2(_user$project$Style_ops['=>'], 'height', '100%'),
+			_1: {
+				ctor: '::',
+				_0: A2(_user$project$Style_ops['=>'], 'background', 'radial-gradient(rgb(43, 43, 43) 40%, black)'),
+				_1: {
+					ctor: '::',
+					_0: A2(_user$project$Style_ops['=>'], 'overflow', 'hidden'),
+					_1: {ctor: '[]'}
+				}
+			}
+		}
 	}
 };
 var _user$project$Style$image = {
 	ctor: '::',
-	_0: A2(_user$project$Style_ops['=>'], 'width', '100vw'),
+	_0: A2(_user$project$Style_ops['=>'], 'width', '100%'),
 	_1: {
 		ctor: '::',
-		_0: A2(_user$project$Style_ops['=>'], 'height', '100vh'),
+		_0: A2(_user$project$Style_ops['=>'], 'height', '100%'),
+		_1: {
+			ctor: '::',
+			_0: A2(_user$project$Style_ops['=>'], 'background-size', 'contain'),
+			_1: {
+				ctor: '::',
+				_0: A2(_user$project$Style_ops['=>'], 'background-position', '50% 50%'),
+				_1: {
+					ctor: '::',
+					_0: A2(_user$project$Style_ops['=>'], 'background-repeat', 'no-repeat'),
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	}
+};
+var _user$project$Style$video = {
+	ctor: '::',
+	_0: A2(_user$project$Style_ops['=>'], 'width', '100%'),
+	_1: {
+		ctor: '::',
+		_0: A2(_user$project$Style_ops['=>'], 'height', '100%'),
 		_1: {
 			ctor: '::',
 			_0: A2(_user$project$Style_ops['=>'], 'background-size', 'contain'),
@@ -9173,6 +9212,43 @@ var _user$project$Style$countdownButton = {
 		}
 	}
 };
+var _user$project$Style$loader = {
+	ctor: '::',
+	_0: A2(_user$project$Style_ops['=>'], 'position', 'absolute'),
+	_1: {
+		ctor: '::',
+		_0: A2(_user$project$Style_ops['=>'], 'display', 'flex'),
+		_1: {
+			ctor: '::',
+			_0: A2(_user$project$Style_ops['=>'], 'top', '0'),
+			_1: {
+				ctor: '::',
+				_0: A2(_user$project$Style_ops['=>'], 'right', '0'),
+				_1: {
+					ctor: '::',
+					_0: A2(_user$project$Style_ops['=>'], 'bottom', '0'),
+					_1: {
+						ctor: '::',
+						_0: A2(_user$project$Style_ops['=>'], 'left', '0'),
+						_1: {
+							ctor: '::',
+							_0: A2(_user$project$Style_ops['=>'], 'justify-content', 'center'),
+							_1: {
+								ctor: '::',
+								_0: A2(_user$project$Style_ops['=>'], 'align-items', 'center'),
+								_1: {
+									ctor: '::',
+									_0: A2(_user$project$Style_ops['=>'], 'color', '#656565'),
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+};
 var _user$project$Image$view = function (model) {
 	var _p0 = model.link;
 	if (_p0.ctor === 'Just') {
@@ -9205,6 +9281,55 @@ var _user$project$Image$view = function (model) {
 				_1: {ctor: '[]'}
 			});
 	}
+};
+var _user$project$Video$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$video,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$preload('auto'),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$style(_user$project$Style$video),
+				_1: {
+					ctor: '::',
+					_0: A2(_elm_lang$html$Html_Attributes$attribute, 'autoplay', 'autoplay'),
+					_1: {
+						ctor: '::',
+						_0: A2(_elm_lang$html$Html_Attributes$attribute, 'muted', 'muted'),
+						_1: {
+							ctor: '::',
+							_0: A2(_elm_lang$html$Html_Attributes$attribute, 'loop', 'loop'),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html_Attributes$attribute,
+									'data-shim',
+									A2(_elm_lang$core$Maybe$withDefault, '', model.title)),
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				}
+			}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$source,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$src(
+						A2(_elm_lang$core$Maybe$withDefault, '', model.mp4)),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$type_('video/mp4'),
+						_1: {ctor: '[]'}
+					}
+				},
+				{ctor: '[]'}),
+			_1: {ctor: '[]'}
+		});
 };
 var _user$project$Input$initialModel = {value: ''};
 var _user$project$Input$Model = function (a) {
@@ -9297,10 +9422,10 @@ var _user$project$Countdown$view = function (model) {
 						_0: _elm_lang$html$Html_Attributes$type_('range'),
 						_1: {
 							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$min('5'),
+							_0: _elm_lang$html$Html_Attributes$min('3'),
 							_1: {
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$max('50'),
+								_0: _elm_lang$html$Html_Attributes$max('60'),
 								_1: {
 									ctor: '::',
 									_0: _elm_lang$html$Html_Events$onInput(_user$project$Countdown$Change),
@@ -9356,10 +9481,6 @@ var _user$project$App$filterImages = function (images) {
 			},
 			rules);
 	};
-	var _p0 = A2(
-		_elm_lang$core$Debug$log,
-		'images',
-		A2(_elm_lang$core$List$filter, filter, images));
 	return A2(_elm_lang$core$List$filter, filter, images);
 };
 var _user$project$App$pickImage = F2(
@@ -9368,9 +9489,9 @@ var _user$project$App$pickImage = F2(
 			_elm_lang$core$Array$get,
 			index,
 			_elm_lang$core$Array$fromList(images));
-		var _p1 = item;
-		if (_p1.ctor === 'Just') {
-			return _p1._0;
+		var _p0 = item;
+		if (_p0.ctor === 'Just') {
+			return _p0._0;
 		} else {
 			return _user$project$Imgur$defaultImage;
 		}
@@ -9382,12 +9503,13 @@ var _user$project$App$initialModel = {
 	error: '',
 	inputModel: _user$project$Input$Model('funny'),
 	tick: 0,
-	slideshowInterval: 50,
-	isPlaying: true
+	slideshowInterval: 30,
+	isPlaying: true,
+	isLoading: true
 };
-var _user$project$App$Model = F8(
-	function (a, b, c, d, e, f, g, h) {
-		return {images: a, visibleId: b, visibleImage: c, error: d, inputModel: e, tick: f, slideshowInterval: g, isPlaying: h};
+var _user$project$App$Model = F9(
+	function (a, b, c, d, e, f, g, h, i) {
+		return {images: a, visibleId: b, visibleImage: c, error: d, inputModel: e, tick: f, slideshowInterval: g, isPlaying: h, isLoading: i};
 	});
 var _user$project$App$CountdownMsg = function (a) {
 	return {ctor: 'CountdownMsg', _0: a};
@@ -9396,6 +9518,19 @@ var _user$project$App$InputMsg = function (a) {
 	return {ctor: 'InputMsg', _0: a};
 };
 var _user$project$App$view = function (model) {
+	var loader = A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$style(_user$project$Style$loader),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text('...'),
+			_1: {ctor: '[]'}
+		});
+	var player = A2(_elm_lang$core$Maybe$withDefault, false, model.visibleImage.animated) ? _user$project$Video$view(model.visibleImage) : _user$project$Image$view(model.visibleImage);
 	return A2(
 		_elm_lang$html$Html$div,
 		{
@@ -9405,20 +9540,20 @@ var _user$project$App$view = function (model) {
 		},
 		{
 			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$map,
-				_user$project$App$InputMsg,
-				_user$project$Input$view(model.inputModel)),
+			_0: model.isLoading ? loader : player,
 			_1: {
 				ctor: '::',
-				_0: _user$project$Image$view(model.visibleImage),
+				_0: A2(
+					_elm_lang$html$Html$map,
+					_user$project$App$CountdownMsg,
+					_user$project$Countdown$view(
+						A2(_user$project$Countdown$Model, model.slideshowInterval - model.tick, model.isPlaying))),
 				_1: {
 					ctor: '::',
 					_0: A2(
 						_elm_lang$html$Html$map,
-						_user$project$App$CountdownMsg,
-						_user$project$Countdown$view(
-							A2(_user$project$Countdown$Model, model.slideshowInterval - model.tick, model.isPlaying))),
+						_user$project$App$InputMsg,
+						_user$project$Input$view(model.inputModel)),
 					_1: {ctor: '[]'}
 				}
 			}
@@ -9430,6 +9565,7 @@ var _user$project$App$Tick = function (a) {
 var _user$project$App$subscriptions = function (model) {
 	return A2(_elm_lang$core$Time$every, _elm_lang$core$Time$second, _user$project$App$Tick);
 };
+var _user$project$App$PrepareNext = {ctor: 'PrepareNext'};
 var _user$project$App$ShowNext = {ctor: 'ShowNext'};
 var _user$project$App$SetImages = function (a) {
 	return {ctor: 'SetImages', _0: a};
@@ -9441,11 +9577,11 @@ var _user$project$App$update = F2(
 	function (msg, model) {
 		update:
 		while (true) {
-			var _p2 = msg;
-			switch (_p2.ctor) {
+			var _p1 = msg;
+			switch (_p1.ctor) {
 				case 'CountdownMsg':
-					var _p3 = _p2._0;
-					if (_p3.ctor === 'Click') {
+					var _p2 = _p1._0;
+					if (_p2.ctor === 'Click') {
 						return A2(
 							_elm_lang$core$Platform_Cmd_ops['!'],
 							_elm_lang$core$Native_Utils.update(
@@ -9453,13 +9589,13 @@ var _user$project$App$update = F2(
 								{isPlaying: !model.isPlaying}),
 							{ctor: '[]'});
 					} else {
-						var _p4 = _elm_lang$core$String$toInt(_p3._0);
-						if (_p4.ctor === 'Ok') {
+						var _p3 = _elm_lang$core$String$toInt(_p2._0);
+						if (_p3.ctor === 'Ok') {
 							return A2(
 								_elm_lang$core$Platform_Cmd_ops['!'],
 								_elm_lang$core$Native_Utils.update(
 									model,
-									{slideshowInterval: _p4._0}),
+									{slideshowInterval: _p3._0}),
 								{ctor: '[]'});
 						} else {
 							return A2(
@@ -9474,7 +9610,7 @@ var _user$project$App$update = F2(
 						model,
 						{tick: tick}) : model;
 					if (_elm_lang$core$Native_Utils.eq(tick, 0) && model.isPlaying) {
-						var _v4 = _user$project$App$ShowNext,
+						var _v4 = _user$project$App$PrepareNext,
 							_v5 = model_;
 						msg = _v4;
 						model = _v5;
@@ -9486,12 +9622,14 @@ var _user$project$App$update = F2(
 							{ctor: '[]'});
 					}
 				case 'InputMsg':
-					var _p7 = _p2._0;
-					var _p5 = _p7;
-					if (_p5.ctor === 'Submit') {
+					var _p6 = _p1._0;
+					var _p4 = _p6;
+					if (_p4.ctor === 'Submit') {
 						return A2(
 							_elm_lang$core$Platform_Cmd_ops['!'],
-							model,
+							_elm_lang$core$Native_Utils.update(
+								model,
+								{isLoading: true}),
 							{
 								ctor: '::',
 								_0: _user$project$App$getImages(
@@ -9500,9 +9638,9 @@ var _user$project$App$update = F2(
 								_1: {ctor: '[]'}
 							});
 					} else {
-						var _p6 = A2(_user$project$Input$update, _p7, model.inputModel);
-						var inputModel = _p6._0;
-						var inputMsg = _p6._1;
+						var _p5 = A2(_user$project$Input$update, _p6, model.inputModel);
+						var inputModel = _p5._0;
+						var inputMsg = _p5._1;
 						return A2(
 							_elm_lang$core$Platform_Cmd_ops['!'],
 							_elm_lang$core$Native_Utils.update(
@@ -9515,34 +9653,32 @@ var _user$project$App$update = F2(
 							});
 					}
 				case 'SetImages':
-					if (_p2._0.ctor === 'Ok') {
-						var _p8 = _p2._0._0;
-						return A2(
-							_elm_lang$core$Platform_Cmd_ops['!'],
-							(!_elm_lang$core$Native_Utils.eq(
-								_elm_lang$core$List$length(_p8),
-								0)) ? _elm_lang$core$Native_Utils.update(
-								model,
-								{
-									images: _user$project$App$filterImages(_p8),
-									visibleId: 0,
-									visibleImage: A2(
-										_user$project$App$pickImage,
-										0,
-										_user$project$App$filterImages(_p8))
-								}) : model,
-							{ctor: '[]'});
+					if (_p1._0.ctor === 'Ok') {
+						var _p7 = _p1._0._0;
+						var model_ = (!_elm_lang$core$Native_Utils.eq(
+							_elm_lang$core$List$length(_p7),
+							0)) ? _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								images: _user$project$App$filterImages(_p7),
+								visibleId: 0
+							}) : model;
+						var _v7 = _user$project$App$ShowNext,
+							_v8 = model_;
+						msg = _v7;
+						model = _v8;
+						continue update;
 					} else {
 						return A2(
 							_elm_lang$core$Platform_Cmd_ops['!'],
 							_elm_lang$core$Native_Utils.update(
 								model,
 								{
-									error: _elm_lang$core$Basics$toString(_p2._0._0)
+									error: _elm_lang$core$Basics$toString(_p1._0._0)
 								}),
 							{ctor: '[]'});
 					}
-				default:
+				case 'ShowNext':
 					var listLength = _elm_lang$core$List$length(model.images);
 					var newId = A2(
 						_elm_lang$core$Basics_ops['%'],
@@ -9553,10 +9689,27 @@ var _user$project$App$update = F2(
 						_elm_lang$core$Native_Utils.update(
 							model,
 							{
+								isLoading: false,
 								visibleId: newId,
 								visibleImage: A2(_user$project$App$pickImage, newId, model.images)
 							}),
 						{ctor: '[]'});
+				default:
+					return A2(
+						_elm_lang$core$Platform_Cmd_ops['!'],
+						_elm_lang$core$Native_Utils.update(
+							model,
+							{isLoading: true}),
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$core$Task$perform,
+								function (_p8) {
+									return _user$project$App$ShowNext;
+								},
+								_elm_lang$core$Process$sleep(_elm_lang$core$Time$millisecond * 200)),
+							_1: {ctor: '[]'}
+						});
 			}
 		}
 	});
@@ -9569,7 +9722,7 @@ var _user$project$Main$main = _elm_lang$html$Html$program(
 				ctor: '::',
 				_0: _user$project$App$getImages(
 					_user$project$Imgur$request(
-						A2(_user$project$Imgur$api, 'birdswitharms', '0'))),
+						A2(_user$project$Imgur$api, 'funny', '0'))),
 				_1: {ctor: '[]'}
 			}),
 		view: _user$project$App$view,
