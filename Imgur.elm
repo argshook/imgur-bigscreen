@@ -11,12 +11,18 @@ type alias Model =
 type alias Image =
     { title : Maybe String
     , link : Maybe String
+    , nsfw : Maybe Bool
+    , isAlbum : Maybe Bool
     }
 
 
 defaultImage : Image
 defaultImage =
-    { title = Just "", link = Just "" }
+    { title = Just ""
+    , link = Just ""
+    , nsfw = Just False
+    , isAlbum = Just False
+    }
 
 
 
@@ -32,9 +38,11 @@ responseDecoder : Decode.Decoder Model
 responseDecoder =
     let
         imageDecoder =
-            Decode.map2 Image
+            Decode.map4 Image
                 (Decode.maybe (Decode.field "title" Decode.string))
                 (Decode.maybe (Decode.field "link" Decode.string))
+                (Decode.maybe (Decode.field "nsfw" Decode.bool))
+                (Decode.maybe (Decode.field "is_album" Decode.bool))
     in
         Decode.field "data" (Decode.list imageDecoder)
 

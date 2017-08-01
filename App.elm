@@ -61,7 +61,27 @@ delay time msg =
 
 
 nextTimer =
-    delay (Time.second * 20) <| ShowNext
+    delay (Time.second * 3) <| ShowNext
+
+
+filterImages : List Imgur.Image -> List Imgur.Image
+filterImages images =
+    let
+        -- all rules must evaluate to True for image to be displayed
+        rules : List (Imgur.Image -> Bool)
+        rules =
+            [ \image -> not (Maybe.withDefault True image.nsfw)
+            , \image -> not (Maybe.withDefault True image.isAlbum)
+            ]
+
+        filter : Imgur.Image -> Bool
+        filter image =
+            List.all (\r -> r image) rules
+
+        _ =
+            Debug.log "images" <| List.filter filter images
+    in
+        List.filter filter images
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -82,9 +102,9 @@ update msg model =
         SetImages (Ok images) ->
             (if List.length images /= 0 then
                 { model
-                    | images = images
+                    | images = filterImages images
                     , visibleId = 0
-                    , visibleImage = pickImage 0 images
+                    , visibleImage = pickImage 0 <| filterImages images
                 }
              else
                 model
@@ -96,8 +116,16 @@ update msg model =
 
         ShowNext ->
             let
+                listLength =
+                    List.length model.images
+
                 newId =
-                    (model.visibleId + 1) % List.length model.images
+                    (model.visibleId + 1)
+                        % (if listLength == 0 then
+                            1
+                           else
+                            listLength
+                          )
             in
                 { model
                     | visibleId = newId
