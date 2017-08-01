@@ -2,16 +2,19 @@ module App exposing (..)
 
 import Process
 import Task
+import Time
 import Http
 import Html exposing (..)
 import Html.Attributes exposing (style)
 import Html.Events exposing (..)
+import String
 import Image
 import Imgur
 import Array
 import Style
 import Time
 import Input
+import Countdown
 
 
 type alias Model =
@@ -20,13 +23,23 @@ type alias Model =
     , visibleImage : Imgur.Image
     , error : String
     , inputModel : Input.Model
+    , tick : Int
+    , slideshowInterval : Int
+    , isPlaying : Bool
     }
 
 
 type Msg
     = SetImages (Result Http.Error Imgur.Model)
     | ShowNext
+    | Tick Time.Time
     | InputMsg Input.Msg
+    | CountdownMsg Countdown.Msg
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Time.every Time.second Tick
 
 
 initialModel : Model
@@ -35,7 +48,10 @@ initialModel =
     , visibleId = 0
     , visibleImage = Imgur.defaultImage
     , error = ""
-    , inputModel = Input.Model "birdswitharms"
+    , inputModel = Input.Model "funny"
+    , tick = 0
+    , slideshowInterval = 50
+    , isPlaying = True
     }
 
 
@@ -52,16 +68,6 @@ pickImage index images =
 
             Nothing ->
                 Imgur.defaultImage
-
-
-delay : Time.Time -> msg -> Cmd msg
-delay time msg =
-    Process.sleep time
-        |> Task.perform (\_ -> msg)
-
-
-nextTimer =
-    delay (Time.second * 3) <| ShowNext
 
 
 filterImages : List Imgur.Image -> List Imgur.Image
@@ -87,6 +93,35 @@ filterImages images =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        CountdownMsg msg ->
+            case msg of
+                Countdown.Click ->
+                    { model | isPlaying = not model.isPlaying } ! []
+
+                Countdown.Change count ->
+                    case String.toInt count of
+                        Ok value ->
+                            { model | slideshowInterval = value } ! []
+
+                        Err _ ->
+                            model ! []
+
+        Tick _ ->
+            let
+                tick =
+                    (model.tick + 1) % model.slideshowInterval
+
+                model_ =
+                    if model.isPlaying then
+                        { model | tick = tick }
+                    else
+                        model
+            in
+                if tick == 0 && model.isPlaying then
+                    update ShowNext model_
+                else
+                    model_ ! []
+
         InputMsg msg ->
             case msg of
                 Input.Submit ->
@@ -131,7 +166,7 @@ update msg model =
                     | visibleId = newId
                     , visibleImage = pickImage newId model.images
                 }
-                    ! [ nextTimer ]
+                    ! []
 
 
 getImages : Http.Request Imgur.Model -> Cmd Msg
@@ -145,4 +180,8 @@ view model =
         [ style Style.root ]
         [ Html.map InputMsg (Input.view model.inputModel)
         , Image.view model.visibleImage
+        , Html.map CountdownMsg <|
+            Countdown.view <|
+                Countdown.Model (model.slideshowInterval - model.tick)
+                    model.isPlaying
         ]
