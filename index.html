@@ -9013,20 +9013,26 @@ var _user$project$Imgur$api = F2(
 	});
 var _user$project$Imgur$defaultImage = {
 	title: _elm_lang$core$Maybe$Just(''),
-	link: _elm_lang$core$Maybe$Just('')
+	link: _elm_lang$core$Maybe$Just(''),
+	nsfw: _elm_lang$core$Maybe$Just(false),
+	isAlbum: _elm_lang$core$Maybe$Just(false)
 };
-var _user$project$Imgur$Image = F2(
-	function (a, b) {
-		return {title: a, link: b};
+var _user$project$Imgur$Image = F4(
+	function (a, b, c, d) {
+		return {title: a, link: b, nsfw: c, isAlbum: d};
 	});
 var _user$project$Imgur$responseDecoder = function () {
-	var imageDecoder = A3(
-		_elm_lang$core$Json_Decode$map2,
+	var imageDecoder = A5(
+		_elm_lang$core$Json_Decode$map4,
 		_user$project$Imgur$Image,
 		_elm_lang$core$Json_Decode$maybe(
 			A2(_elm_lang$core$Json_Decode$field, 'title', _elm_lang$core$Json_Decode$string)),
 		_elm_lang$core$Json_Decode$maybe(
-			A2(_elm_lang$core$Json_Decode$field, 'link', _elm_lang$core$Json_Decode$string)));
+			A2(_elm_lang$core$Json_Decode$field, 'link', _elm_lang$core$Json_Decode$string)),
+		_elm_lang$core$Json_Decode$maybe(
+			A2(_elm_lang$core$Json_Decode$field, 'nsfw', _elm_lang$core$Json_Decode$bool)),
+		_elm_lang$core$Json_Decode$maybe(
+			A2(_elm_lang$core$Json_Decode$field, 'is_album', _elm_lang$core$Json_Decode$bool)));
 	return A2(
 		_elm_lang$core$Json_Decode$field,
 		'data',
@@ -9093,6 +9099,77 @@ var _user$project$Style$input = {
 			ctor: '::',
 			_0: A2(_user$project$Style_ops['=>'], 'left', '1%'),
 			_1: {ctor: '[]'}
+		}
+	}
+};
+var _user$project$Style$countdown = {
+	ctor: '::',
+	_0: A2(_user$project$Style_ops['=>'], 'position', 'absolute'),
+	_1: {
+		ctor: '::',
+		_0: A2(_user$project$Style_ops['=>'], 'display', 'flex'),
+		_1: {
+			ctor: '::',
+			_0: A2(_user$project$Style_ops['=>'], 'top', '3%'),
+			_1: {
+				ctor: '::',
+				_0: A2(_user$project$Style_ops['=>'], 'right', '2%'),
+				_1: {
+					ctor: '::',
+					_0: A2(_user$project$Style_ops['=>'], 'justify-content', 'center'),
+					_1: {
+						ctor: '::',
+						_0: A2(_user$project$Style_ops['=>'], 'align-items', 'center'),
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		}
+	}
+};
+var _user$project$Style$countdownRange = {
+	ctor: '::',
+	_0: A2(_user$project$Style_ops['=>'], 'margin-right', '10%'),
+	_1: {ctor: '[]'}
+};
+var _user$project$Style$countdownButton = {
+	ctor: '::',
+	_0: A2(_user$project$Style_ops['=>'], 'color', 'rgb(97, 96, 96)'),
+	_1: {
+		ctor: '::',
+		_0: A2(_user$project$Style_ops['=>'], 'font-size', '1.2rem'),
+		_1: {
+			ctor: '::',
+			_0: A2(_user$project$Style_ops['=>'], 'flex-shrink', '0'),
+			_1: {
+				ctor: '::',
+				_0: A2(_user$project$Style_ops['=>'], 'width', '64px'),
+				_1: {
+					ctor: '::',
+					_0: A2(_user$project$Style_ops['=>'], 'height', '64px'),
+					_1: {
+						ctor: '::',
+						_0: A2(_user$project$Style_ops['=>'], 'border', '5px solid #4a3f3f'),
+						_1: {
+							ctor: '::',
+							_0: A2(_user$project$Style_ops['=>'], 'display', 'flex'),
+							_1: {
+								ctor: '::',
+								_0: A2(_user$project$Style_ops['=>'], 'justify-content', 'center'),
+								_1: {
+									ctor: '::',
+									_0: A2(_user$project$Style_ops['=>'], 'align-items', 'center'),
+									_1: {
+										ctor: '::',
+										_0: A2(_user$project$Style_ops['=>'], 'border-radius', '50%'),
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 };
@@ -9192,15 +9269,99 @@ var _user$project$Input$view = function (model) {
 			}
 		});
 };
-var _user$project$App$delay = F2(
-	function (time, msg) {
-		return A2(
-			_elm_lang$core$Task$perform,
-			function (_p0) {
-				return msg;
-			},
-			_elm_lang$core$Process$sleep(time));
+var _user$project$Countdown$Model = F2(
+	function (a, b) {
+		return {count: a, isPlaying: b};
 	});
+var _user$project$Countdown$Change = function (a) {
+	return {ctor: 'Change', _0: a};
+};
+var _user$project$Countdown$Click = {ctor: 'Click'};
+var _user$project$Countdown$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$style(_user$project$Style$countdown),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$input,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$style(_user$project$Style$countdownRange),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$type_('range'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$min('5'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$max('50'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Events$onInput(_user$project$Countdown$Change),
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					}
+				},
+				{ctor: '[]'}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$button,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$style(_user$project$Style$countdownButton),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onClick(_user$project$Countdown$Click),
+							_1: {ctor: '[]'}
+						}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(
+							model.isPlaying ? _elm_lang$core$Basics$toString(model.count) : '▮▮'),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$App$filterImages = function (images) {
+	var rules = {
+		ctor: '::',
+		_0: function (image) {
+			return !A2(_elm_lang$core$Maybe$withDefault, true, image.nsfw);
+		},
+		_1: {
+			ctor: '::',
+			_0: function (image) {
+				return !A2(_elm_lang$core$Maybe$withDefault, true, image.isAlbum);
+			},
+			_1: {ctor: '[]'}
+		}
+	};
+	var filter = function (image) {
+		return A2(
+			_elm_lang$core$List$all,
+			function (r) {
+				return r(image);
+			},
+			rules);
+	};
+	var _p0 = A2(
+		_elm_lang$core$Debug$log,
+		'images',
+		A2(_elm_lang$core$List$filter, filter, images));
+	return A2(_elm_lang$core$List$filter, filter, images);
+};
 var _user$project$App$pickImage = F2(
 	function (index, images) {
 		var item = A2(
@@ -9219,12 +9380,18 @@ var _user$project$App$initialModel = {
 	visibleId: 0,
 	visibleImage: _user$project$Imgur$defaultImage,
 	error: '',
-	inputModel: _user$project$Input$Model('birdswitharms')
+	inputModel: _user$project$Input$Model('funny'),
+	tick: 0,
+	slideshowInterval: 50,
+	isPlaying: true
 };
-var _user$project$App$Model = F5(
-	function (a, b, c, d, e) {
-		return {images: a, visibleId: b, visibleImage: c, error: d, inputModel: e};
+var _user$project$App$Model = F8(
+	function (a, b, c, d, e, f, g, h) {
+		return {images: a, visibleId: b, visibleImage: c, error: d, inputModel: e, tick: f, slideshowInterval: g, isPlaying: h};
 	});
+var _user$project$App$CountdownMsg = function (a) {
+	return {ctor: 'CountdownMsg', _0: a};
+};
 var _user$project$App$InputMsg = function (a) {
 	return {ctor: 'InputMsg', _0: a};
 };
@@ -9245,12 +9412,25 @@ var _user$project$App$view = function (model) {
 			_1: {
 				ctor: '::',
 				_0: _user$project$Image$view(model.visibleImage),
-				_1: {ctor: '[]'}
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$map,
+						_user$project$App$CountdownMsg,
+						_user$project$Countdown$view(
+							A2(_user$project$Countdown$Model, model.slideshowInterval - model.tick, model.isPlaying))),
+					_1: {ctor: '[]'}
+				}
 			}
 		});
 };
+var _user$project$App$Tick = function (a) {
+	return {ctor: 'Tick', _0: a};
+};
+var _user$project$App$subscriptions = function (model) {
+	return A2(_elm_lang$core$Time$every, _elm_lang$core$Time$second, _user$project$App$Tick);
+};
 var _user$project$App$ShowNext = {ctor: 'ShowNext'};
-var _user$project$App$nextTimer = A2(_user$project$App$delay, _elm_lang$core$Time$second * 20, _user$project$App$ShowNext);
 var _user$project$App$SetImages = function (a) {
 	return {ctor: 'SetImages', _0: a};
 };
@@ -9259,80 +9439,125 @@ var _user$project$App$getImages = function (request) {
 };
 var _user$project$App$update = F2(
 	function (msg, model) {
-		var _p2 = msg;
-		switch (_p2.ctor) {
-			case 'InputMsg':
-				var _p5 = _p2._0;
-				var _p3 = _p5;
-				if (_p3.ctor === 'Submit') {
-					return A2(
-						_elm_lang$core$Platform_Cmd_ops['!'],
+		update:
+		while (true) {
+			var _p2 = msg;
+			switch (_p2.ctor) {
+				case 'CountdownMsg':
+					var _p3 = _p2._0;
+					if (_p3.ctor === 'Click') {
+						return A2(
+							_elm_lang$core$Platform_Cmd_ops['!'],
+							_elm_lang$core$Native_Utils.update(
+								model,
+								{isPlaying: !model.isPlaying}),
+							{ctor: '[]'});
+					} else {
+						var _p4 = _elm_lang$core$String$toInt(_p3._0);
+						if (_p4.ctor === 'Ok') {
+							return A2(
+								_elm_lang$core$Platform_Cmd_ops['!'],
+								_elm_lang$core$Native_Utils.update(
+									model,
+									{slideshowInterval: _p4._0}),
+								{ctor: '[]'});
+						} else {
+							return A2(
+								_elm_lang$core$Platform_Cmd_ops['!'],
+								model,
+								{ctor: '[]'});
+						}
+					}
+				case 'Tick':
+					var tick = A2(_elm_lang$core$Basics_ops['%'], model.tick + 1, model.slideshowInterval);
+					var model_ = model.isPlaying ? _elm_lang$core$Native_Utils.update(
 						model,
-						{
-							ctor: '::',
-							_0: _user$project$App$getImages(
-								_user$project$Imgur$request(
-									A2(_user$project$Imgur$api, model.inputModel.value, '0'))),
-							_1: {ctor: '[]'}
-						});
-				} else {
-					var _p4 = A2(_user$project$Input$update, _p5, model.inputModel);
-					var inputModel = _p4._0;
-					var inputMsg = _p4._1;
+						{tick: tick}) : model;
+					if (_elm_lang$core$Native_Utils.eq(tick, 0) && model.isPlaying) {
+						var _v4 = _user$project$App$ShowNext,
+							_v5 = model_;
+						msg = _v4;
+						model = _v5;
+						continue update;
+					} else {
+						return A2(
+							_elm_lang$core$Platform_Cmd_ops['!'],
+							model_,
+							{ctor: '[]'});
+					}
+				case 'InputMsg':
+					var _p7 = _p2._0;
+					var _p5 = _p7;
+					if (_p5.ctor === 'Submit') {
+						return A2(
+							_elm_lang$core$Platform_Cmd_ops['!'],
+							model,
+							{
+								ctor: '::',
+								_0: _user$project$App$getImages(
+									_user$project$Imgur$request(
+										A2(_user$project$Imgur$api, model.inputModel.value, '0'))),
+								_1: {ctor: '[]'}
+							});
+					} else {
+						var _p6 = A2(_user$project$Input$update, _p7, model.inputModel);
+						var inputModel = _p6._0;
+						var inputMsg = _p6._1;
+						return A2(
+							_elm_lang$core$Platform_Cmd_ops['!'],
+							_elm_lang$core$Native_Utils.update(
+								model,
+								{inputModel: inputModel}),
+							{
+								ctor: '::',
+								_0: A2(_elm_lang$core$Platform_Cmd$map, _user$project$App$InputMsg, inputMsg),
+								_1: {ctor: '[]'}
+							});
+					}
+				case 'SetImages':
+					if (_p2._0.ctor === 'Ok') {
+						var _p8 = _p2._0._0;
+						return A2(
+							_elm_lang$core$Platform_Cmd_ops['!'],
+							(!_elm_lang$core$Native_Utils.eq(
+								_elm_lang$core$List$length(_p8),
+								0)) ? _elm_lang$core$Native_Utils.update(
+								model,
+								{
+									images: _user$project$App$filterImages(_p8),
+									visibleId: 0,
+									visibleImage: A2(
+										_user$project$App$pickImage,
+										0,
+										_user$project$App$filterImages(_p8))
+								}) : model,
+							{ctor: '[]'});
+					} else {
+						return A2(
+							_elm_lang$core$Platform_Cmd_ops['!'],
+							_elm_lang$core$Native_Utils.update(
+								model,
+								{
+									error: _elm_lang$core$Basics$toString(_p2._0._0)
+								}),
+							{ctor: '[]'});
+					}
+				default:
+					var listLength = _elm_lang$core$List$length(model.images);
+					var newId = A2(
+						_elm_lang$core$Basics_ops['%'],
+						model.visibleId + 1,
+						_elm_lang$core$Native_Utils.eq(listLength, 0) ? 1 : listLength);
 					return A2(
 						_elm_lang$core$Platform_Cmd_ops['!'],
 						_elm_lang$core$Native_Utils.update(
 							model,
-							{inputModel: inputModel}),
-						{
-							ctor: '::',
-							_0: A2(_elm_lang$core$Platform_Cmd$map, _user$project$App$InputMsg, inputMsg),
-							_1: {ctor: '[]'}
-						});
-				}
-			case 'SetImages':
-				if (_p2._0.ctor === 'Ok') {
-					var _p6 = _p2._0._0;
-					return A2(
-						_elm_lang$core$Platform_Cmd_ops['!'],
-						(!_elm_lang$core$Native_Utils.eq(
-							_elm_lang$core$List$length(_p6),
-							0)) ? _elm_lang$core$Native_Utils.update(
-							model,
 							{
-								images: _p6,
-								visibleId: 0,
-								visibleImage: A2(_user$project$App$pickImage, 0, _p6)
-							}) : model,
-						{ctor: '[]'});
-				} else {
-					return A2(
-						_elm_lang$core$Platform_Cmd_ops['!'],
-						_elm_lang$core$Native_Utils.update(
-							model,
-							{
-								error: _elm_lang$core$Basics$toString(_p2._0._0)
+								visibleId: newId,
+								visibleImage: A2(_user$project$App$pickImage, newId, model.images)
 							}),
 						{ctor: '[]'});
-				}
-			default:
-				var newId = A2(
-					_elm_lang$core$Basics_ops['%'],
-					model.visibleId + 1,
-					_elm_lang$core$List$length(model.images));
-				return A2(
-					_elm_lang$core$Platform_Cmd_ops['!'],
-					_elm_lang$core$Native_Utils.update(
-						model,
-						{
-							visibleId: newId,
-							visibleImage: A2(_user$project$App$pickImage, newId, model.images)
-						}),
-					{
-						ctor: '::',
-						_0: _user$project$App$nextTimer,
-						_1: {ctor: '[]'}
-					});
+			}
 		}
 	});
 var _user$project$Main$main = _elm_lang$html$Html$program(
@@ -9345,17 +9570,11 @@ var _user$project$Main$main = _elm_lang$html$Html$program(
 				_0: _user$project$App$getImages(
 					_user$project$Imgur$request(
 						A2(_user$project$Imgur$api, 'birdswitharms', '0'))),
-				_1: {
-					ctor: '::',
-					_0: _user$project$App$nextTimer,
-					_1: {ctor: '[]'}
-				}
+				_1: {ctor: '[]'}
 			}),
 		view: _user$project$App$view,
 		update: _user$project$App$update,
-		subscriptions: function (_p0) {
-			return _elm_lang$core$Platform_Sub$none;
-		}
+		subscriptions: _user$project$App$subscriptions
 	})();
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
