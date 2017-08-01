@@ -12,9 +12,11 @@ type alias CSSRule =
 
 root : List CSSRule
 root =
-    [ "position" => "relative"
-    , "width" => "100%"
-    , "height" => "100%"
+    [ "position" => "absolute"
+    , "top" => "0"
+    , "right" => "0"
+    , "bottom" => "0"
+    , "left" => "0"
     , "background" => "radial-gradient(rgb(43, 43, 43) 40%, black)"
     , "overflow" => "hidden"
     ]
