@@ -6,7 +6,6 @@ import Time
 import Http
 import Html exposing (..)
 import Html.Attributes exposing (style)
-import Html.Events exposing (..)
 import String
 import Image
 import Video
@@ -51,7 +50,7 @@ initialModel =
     , visibleId = 0
     , visibleImage = Imgur.defaultImage
     , error = ""
-    , inputModel = Input.Model "funny"
+    , inputModel = Input.Model "programmerhumor"
     , tick = 0
     , slideshowInterval = 30
     , isPlaying = True
