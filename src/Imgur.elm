@@ -1,4 +1,4 @@
-module Imgur exposing (..)
+module Imgur exposing (Image, Model, api, defaultImage, request, responseDecoder)
 
 import Http
 import Json.Decode as Decode
@@ -50,18 +50,18 @@ responseDecoder =
                 (Decode.maybe (Decode.field "animated" Decode.bool))
                 (Decode.maybe (Decode.field "mp4" Decode.string))
     in
-        Decode.field "data" (Decode.list imageDecoder)
+    Decode.field "data" (Decode.list imageDecoder)
 
 
-request : String -> Http.Request Model
-request url =
+request : String -> (Result Http.Error Model -> msg) -> Cmd msg
+request url msg =
     Http.request
         { method = "GET"
         , url = url
         , body = Http.emptyBody
-        , expect = Http.expectJson responseDecoder
+        , expect = Http.expectJson msg responseDecoder
         , timeout = Nothing
-        , withCredentials = False
+        , tracker = Nothing
         , headers =
             [ Http.header "Authorization" "Client-ID f09bccbd2f1c97f"
             ]

@@ -1,4 +1,4 @@
-module Input exposing (..)
+module Input exposing (Model, Msg(..), init, update, view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -16,8 +16,8 @@ type Msg
     | Submit
 
 
-initialModel : Model
-initialModel =
+init : Model
+init =
     { value = ""
     }
 
@@ -26,16 +26,19 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Change value ->
-            Model value ! []
+            ( Model value, Cmd.none )
 
         _ ->
-            model ! []
+            ( model, Cmd.none )
 
 
 view : Model -> Html Msg
 view model =
     div
-        [ style Style.input ]
+        (List.map
+            (\( k, v ) -> style k v)
+            Style.input
+        )
         [ input
             [ onInput Change
             , value model.value
